@@ -14,14 +14,6 @@ pipeline {
 
 
     stages {
-        stage('Version change') {
-            steps {
-
-                        isVersionUpdated = 0
-            }
-        }
-
-
         stage('Publish') {
             steps {
                 script {
@@ -31,6 +23,8 @@ pipeline {
                     }
                     if (isVersionUpdated > 0 ) {
                         println "EXECUTED"
+                    } else {
+                        println "not executed"
                     }
                 }
             }
