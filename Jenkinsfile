@@ -1,4 +1,4 @@
-isVersionUpdated = 0
+def isVersionUpdated = 0
 pipeline {
 
     agent any
