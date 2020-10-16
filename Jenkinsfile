@@ -24,8 +24,10 @@ pipeline {
         stage('Deploy PRE') {
             when { expression { GIT_BRANCH ==~ /main/ } }
             steps  {
-                envDeploy = params.deploymentTarget
-                println "Deploy to PRE"
+                script {
+                    envDeploy = params.deploymentTarget
+                    println "Deploy to PRE"
+                }
             }
         }
         stage('Deploy branch to TEST?') {
