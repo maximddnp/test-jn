@@ -49,7 +49,7 @@ pipeline {
                 script {
                     input "Promote to TEST?"
                     envDeploy = 'TEST'
-                    sh "$envDeploy"
+                    println "$envDeploy"
                 }
             }
         }
