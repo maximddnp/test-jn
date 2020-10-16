@@ -45,6 +45,7 @@ pipeline {
                 script {
                     input "Promote to TEST?"
                     deploymentTarget = 'TEST'
+                    sh 'printenv'
                 }
             }
         }
