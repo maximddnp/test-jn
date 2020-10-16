@@ -45,7 +45,7 @@ pipeline {
         stage('Deploy PP') {
             when {
                 allOf {
-                    GIT_BRANCH 'master'
+                    branch 'master'
                     expression {
                         params.deploymentTarget == 'PP' ||
                                 params.deploymentTarget == 'PROD'
@@ -57,7 +57,7 @@ pipeline {
             }
         }
         stage('Deploy branch to PROD') {
-            when { expression { BRANCH_NAME ==~ /master/ } }
+            when { expression { GIT_BRANCH ==~ /master/ } }
             steps {
                 script {
                     input "Promote to PROD?"
@@ -67,7 +67,7 @@ pipeline {
         stage('Deploy PROD') {
             when {
                 allOf {
-                    GIT_BRANCH 'master'
+                    branch 'master'
                     expression {
                         params.deploymentTarget == 'PROD'
                     }
