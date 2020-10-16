@@ -1,4 +1,3 @@
-def isVersionUpdated = 0
 pipeline {
 
     agent any
@@ -8,7 +7,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'deploymentTarget', choices: ['PRE', 'TEST', 'PP', 'PROD' ], description: 'Env for deploy?')
+        choice(name: 'deploymentTarget', choices: [ 'PROD', 'PRE', 'TEST', 'PP' ], description: 'Env for deploy?')
     }
 
 
@@ -35,11 +34,12 @@ pipeline {
                 println "Deploy to TEST"
             }
         }
-        stage('Deploy branch to PP') {
+        stage('Deploy branch to PP?') {
             when { expression { BRANCH_NAME ==~ /master/ } }
             steps {
-                input "Promote to PP?"
-                params.deploymentTarget = 'PP'
+                script {
+                    input "Promote to PP?"
+                }
             }
         }
         stage('Deploy PP') {
@@ -59,8 +59,9 @@ pipeline {
         stage('Deploy branch to PROD') {
             when { expression { BRANCH_NAME ==~ /master/ } }
             steps {
-                input "Promote to PROD?"
-                params.deploymentTarget = 'PROD'
+                script {
+                    input "Promote to PROD?"
+                }
             }
         }
         stage('Deploy PROD') {
