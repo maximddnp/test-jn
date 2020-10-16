@@ -21,7 +21,7 @@ pipeline {
         }
 
         stage('Deploy PRE') {
-            when { expression { GIT_BRANCH ==~ /(master|feature-.+|PR-.+)/ } }
+            when { expression { GIT_BRANCH ==~ /main/ } }
             steps  {
                 println "Deploy to PRE"
             }
@@ -29,7 +29,7 @@ pipeline {
         stage('Deploy TEST') {
             when {
                 allOf {
-                    branch 'master'
+                    branch 'main'
                     expression {
                         params.deploymentTarget == 'TEST' ||
                                 params.deploymentTarget == 'PP' ||
@@ -42,7 +42,7 @@ pipeline {
             }
         }
         stage('Deploy branch to PP?') {
-            when { expression { GIT_BRANCH ==~ /master/ } }
+            when { expression { GIT_BRANCH ==~ /main/ } }
             steps {
                 script {
                     input "Promote to PP?"
@@ -52,7 +52,7 @@ pipeline {
         stage('Deploy PP') {
             when {
                 allOf {
-                    branch 'master'
+                    branch 'main'
                     expression {
                         params.deploymentTarget == 'PP' ||
                                 params.deploymentTarget == 'PROD'
@@ -64,7 +64,7 @@ pipeline {
             }
         }
         stage('Deploy branch to PROD') {
-            when { expression { GIT_BRANCH ==~ /master/ } }
+            when { expression { GIT_BRANCH ==~ /main/ } }
             steps {
                 script {
                     input "Promote to PROD?"
@@ -74,7 +74,7 @@ pipeline {
         stage('Deploy PROD') {
             when {
                 allOf {
-                    branch 'master'
+                    branch 'main'
                     expression {
                         params.deploymentTarget == 'PROD'
                     }
