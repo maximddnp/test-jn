@@ -8,28 +8,72 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'DISABLE_VERSION_BUMP_ONLY_CHECK', defaultValue: false, description: '')
-        booleanParam(name: 'FORCE_PUBLISH', defaultValue: false, description: '')
+        choice(name: 'deploymentTarget', choices: ['PRE', 'TEST', 'PP', 'PROD' ], description: 'Env for deploy?')
     }
 
 
     stages {
 
-        stage('Publish') {
-            steps {
-                script {
-
-                    if (params.FORCE_PUBLISH == true) {
-                        isVersionUpdated = 1
-                    }
-                    if (isVersionUpdated > 0 ) {
-                        println "EXECUTED"
-                        println "updated = $isVersionUpdated, FORCE=${params.FORCE_PUBLISH}"
-                    } else {
-                        println "not executed"
-                        println "updated = $isVersionUpdated, FORCE=${params.FORCE_PUBLISH}"
+        stage('Deploy PRE') {
+            when { expression { BRANCH_NAME ==~ /(master|feature-.+|PR-.+)/ } }
+            steps  {
+                println "Deploy to PRE"
+            }
+        }
+        stage('Deploy TEST') {
+            when {
+                allOf {
+                    branch 'master'
+                    expression {
+                        params.deploymentTarget == 'TEST' ||
+                                params.deploymentTarget == 'PP' ||
+                                params.deploymentTarget == 'PROD'
                     }
                 }
+            }
+            steps  {
+                println "Deploy to TEST"
+            }
+        }
+        stage('Deploy branch to PP') {
+            when { expression { BRANCH_NAME ==~ /master/ } }
+            steps {
+                input "Promote to PP?"
+                params.deploymentTarget = 'PP'
+            }
+        }
+        stage('Deploy PP') {
+            when {
+                allOf {
+                    branch 'master'
+                    expression {
+                        params.deploymentTarget == 'PP' ||
+                                params.deploymentTarget == 'PROD'
+                    }
+                }
+            }
+            steps  {
+                println "Deploy to PP"
+            }
+        }
+        stage('Deploy branch to PROD') {
+            when { expression { BRANCH_NAME ==~ /master/ } }
+            steps {
+                input "Promote to PROD?"
+                params.deploymentTarget = 'PROD'
+            }
+        }
+        stage('Deploy PROD') {
+            when {
+                allOf {
+                    branch 'master'
+                    expression {
+                        params.deploymentTarget == 'PROD'
+                    }
+                }
+            }
+            steps  {
+                println "Deploy to PROD"
             }
         }
     }
