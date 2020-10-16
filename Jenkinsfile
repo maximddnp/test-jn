@@ -31,9 +31,13 @@ pipeline {
                 allOf {
                     branch 'main'
                     expression {
-                        params.deploymentTarget != 'TEST' ||
-                                params.deploymentTarget != 'PP' ||
-                                params.deploymentTarget != 'PROD'
+                        params.deploymentTarget != 'TEST'
+                    }
+                    expression {
+                        params.deploymentTarget != 'PP'
+                    }
+                    expression {
+                        params.deploymentTarget != 'PROD'
                     }
                 }
             }
@@ -64,8 +68,10 @@ pipeline {
                 allOf {
                     branch 'main'
                     expression {
-                        params.deploymentTarget != 'PP' ||
-                                params.deploymentTarget != 'PROD'
+                        params.deploymentTarget != 'PP'
+                    }
+                    expression {
+                        params.deploymentTarget != 'PROD'
                     }
                 }
             }
@@ -90,7 +96,7 @@ pipeline {
                 println "Deploy to PP"
             }
         }
-        stage('Deploy branch to PROD') {
+        stage('Deploy branch to PROD?') {
             when {
                 allOf {
                     branch 'main'
