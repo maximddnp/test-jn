@@ -12,6 +12,9 @@ pipeline {
 
 
     stages {
+        stage('Checkout') {
+            checkout scm
+        }
 
         stage('Deploy PRE') {
             when { expression { BRANCH_NAME ==~ /(master|feature-.+|PR-.+)/ } }
