@@ -7,7 +7,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'deploymentTarget', choices: [ 'PROD', 'PRE', 'TEST', 'PP' ], description: 'Env for deploy?')
+        choice(name: 'deploymentTarget', choices: [ 'PRE', 'TEST', 'PP', 'PROD' ], description: 'Env for deploy?')
     }
 
 
@@ -24,6 +24,15 @@ pipeline {
             when { expression { GIT_BRANCH ==~ /main/ } }
             steps  {
                 println "Deploy to PRE"
+            }
+        }
+        stage('Deploy branch to TEST?') {
+            when { expression { GIT_BRANCH ==~ /main/ } }
+            steps {
+                script {
+                    input "Promote to TEST?"
+                    deploymentTarget = 'TEST'
+                }
             }
         }
         stage('Deploy TEST') {
@@ -46,6 +55,7 @@ pipeline {
             steps {
                 script {
                     input "Promote to PP?"
+                    deploymentTarget = 'PP'
                 }
             }
         }
@@ -68,6 +78,7 @@ pipeline {
             steps {
                 script {
                     input "Promote to PROD?"
+                    deploymentTarget = 'PROD'
                 }
             }
         }
