@@ -1,3 +1,4 @@
+def envDeploy
 pipeline {
 
     agent any
@@ -23,6 +24,7 @@ pipeline {
         stage('Deploy PRE') {
             when { expression { GIT_BRANCH ==~ /main/ } }
             steps  {
+                envDeploy = params.deploymentTarget
                 println "Deploy to PRE"
             }
         }
@@ -31,21 +33,21 @@ pipeline {
                 allOf {
                     branch 'main'
                     expression {
-                        params.deploymentTarget != 'TEST'
+                        envDeploy != 'TEST'
                     }
                     expression {
-                        params.deploymentTarget != 'PP'
+                        envDeploy != 'PP'
                     }
                     expression {
-                        params.deploymentTarget != 'PROD'
+                        envDeploy != 'PROD'
                     }
                 }
             }
             steps {
                 script {
                     input "Promote to TEST?"
-                    params.deploymentTarget = 'TEST'
-                    sh 'printenv'
+                    envDeploy = 'TEST'
+                    sh "$envDeploy"
                 }
             }
         }
@@ -54,9 +56,9 @@ pipeline {
                 allOf {
                     branch 'main'
                     expression {
-                        params.deploymentTarget == 'TEST' ||
-                                params.deploymentTarget == 'PP' ||
-                                params.deploymentTarget == 'PROD'
+                        envDeploy == 'TEST' ||
+                                envDeploy == 'PP' ||
+                                envDeploy == 'PROD'
                     }
                 }
             }
@@ -69,17 +71,17 @@ pipeline {
                 allOf {
                     branch 'main'
                     expression {
-                        params.deploymentTarget != 'PP'
+                        envDeploy != 'PP'
                     }
                     expression {
-                        params.deploymentTarget != 'PROD'
+                        envDeploy != 'PROD'
                     }
                 }
             }
             steps {
                 script {
                     input "Promote to PP?"
-                    params.deploymentTarget = 'PP'
+                    envDeploy = 'PP'
                 }
             }
         }
@@ -88,8 +90,8 @@ pipeline {
                 allOf {
                     branch 'main'
                     expression {
-                        params.deploymentTarget == 'PP' ||
-                                params.deploymentTarget == 'PROD'
+                        envDeploy == 'PP' ||
+                                envDeploy == 'PROD'
                     }
                 }
             }
@@ -102,14 +104,14 @@ pipeline {
                 allOf {
                     branch 'main'
                     expression {
-                        params.deploymentTarget != 'PROD'
+                        envDeploy != 'PROD'
                     }
                 }
             }
             steps {
                 script {
                     input "Promote to PROD?"
-                    params.deploymentTarget = 'PROD'
+                    envDeploy = 'PROD'
                 }
             }
         }
@@ -118,7 +120,7 @@ pipeline {
                 allOf {
                     branch 'main'
                     expression {
-                        params.deploymentTarget == 'PROD'
+                        envDeploy == 'PROD'
                     }
                 }
             }
