@@ -27,7 +27,16 @@ pipeline {
             }
         }
         stage('Deploy branch to TEST?') {
-            when { expression { GIT_BRANCH ==~ /main/ } }
+            when {
+                allOf {
+                    branch 'main'
+                    expression {
+                        params.deploymentTarget != 'TEST' ||
+                                params.deploymentTarget != 'PP' ||
+                                params.deploymentTarget != 'PROD'
+                    }
+                }
+            }
             steps {
                 script {
                     input "Promote to TEST?"
@@ -51,7 +60,15 @@ pipeline {
             }
         }
         stage('Deploy branch to PP?') {
-            when { expression { GIT_BRANCH ==~ /main/ } }
+            when {
+                allOf {
+                    branch 'main'
+                    expression {
+                        params.deploymentTarget != 'PP' ||
+                                params.deploymentTarget != 'PROD'
+                    }
+                }
+            }
             steps {
                 script {
                     input "Promote to PP?"
@@ -74,7 +91,14 @@ pipeline {
             }
         }
         stage('Deploy branch to PROD') {
-            when { expression { GIT_BRANCH ==~ /main/ } }
+            when {
+                allOf {
+                    branch 'main'
+                    expression {
+                        params.deploymentTarget != 'PROD'
+                    }
+                }
+            }
             steps {
                 script {
                     input "Promote to PROD?"
