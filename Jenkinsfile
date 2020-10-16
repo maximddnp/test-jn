@@ -12,6 +12,13 @@ pipeline {
 
 
     stages {
+        stage('Print') {
+            steps {
+                script {
+                    sh 'printenv'
+                }
+            }
+        }
 
         stage('Deploy PRE') {
             when { expression { GIT_BRANCH ==~ /(master|feature-.+|PR-.+)/ } }
