@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     input "Promote to TEST?"
-                    deploymentTarget = 'TEST'
+                    params.deploymentTarget = 'TEST'
                     sh 'printenv'
                 }
             }
@@ -79,7 +79,7 @@ pipeline {
             steps {
                 script {
                     input "Promote to PP?"
-                    deploymentTarget = 'PP'
+                    params.deploymentTarget = 'PP'
                 }
             }
         }
@@ -109,7 +109,7 @@ pipeline {
             steps {
                 script {
                     input "Promote to PROD?"
-                    deploymentTarget = 'PROD'
+                    params.deploymentTarget = 'PROD'
                 }
             }
         }
